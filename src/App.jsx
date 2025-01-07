@@ -1,4 +1,6 @@
 import {useEffect, useState} from "react";
+import UserContext from "./contexts/UserContext.js";
+import UserInfo from "./components/UserInfo.jsx";
 
 async function fetchPokemon() {
     const response = await fetch('https://pokeapi.co/api/v2/pokemon');
@@ -10,6 +12,11 @@ function App() {
     const [pokemon, setPokemon] = useState([]);
     const [pokemonShown, setPokemonShown] = useState(null);
 
+    const user = {
+        name: 'João',
+        email: 'joao@email.com'
+    }
+
     useEffect(() => {
         fetchPokemon().then((data) => {
             setPokemon(data);
@@ -20,16 +27,16 @@ function App() {
      * Uma possinilidade de utilizar sem o useEffect é com o exemplo abaixo
      */
 
-    // if (pokemon.length === 0) {
-    //     fetchPokemon().then(resp => {
-    //         setPokemon(resp);
-    //     })
-    // }
+        // if (pokemon.length === 0) {
+        //     fetchPokemon().then(resp => {
+        //         setPokemon(resp);
+        //     })
+        // }
 
     const showDatailsPokemon = async (url) => {
-        const data = await fetch(url).then(res => res.json());
-        setPokemonShown(data);
-    }
+            const data = await fetch(url).then(res => res.json());
+            setPokemonShown(data);
+        }
 
     return (
         <div className="app">
@@ -55,7 +62,7 @@ function App() {
                     />
                     <div className="stat">
                         <b>Tipo: </b>
-                        {pokemonShown.types.map(({ type }) => (
+                        {pokemonShown.types.map(({type}) => (
                             <span key={type.name}>{type.name} </span>
                         ))}
                     </div>
@@ -68,7 +75,7 @@ function App() {
                     <div className="stat">
                         <b>Atributos</b>
                         <ul>
-                            {pokemonShown.stats.map(({ base_stat, stat }) => (
+                            {pokemonShown.stats.map(({base_stat, stat}) => (
                                 <li key={stat.name}>
                                     {stat.name}: {base_stat}
                                 </li>
@@ -78,7 +85,7 @@ function App() {
                     <div className="stat">
                         <b>Habilidades</b>
                         <ul>
-                            {pokemonShown.abilities.map(({ ability, is_hidden }) => (
+                            {pokemonShown.abilities.map(({ability, is_hidden}) => (
                                 <li key={ability.name}>
                                     {ability.name}
                                     {is_hidden && " (secreta)"}
@@ -89,7 +96,13 @@ function App() {
                 </div>
             ) : (
                 <p>Selecione um Pokémon para ver os detalhes</p>
-                )}
+            )}
+            <div>
+                <UserContext.Provider value={user}>
+                    <h1>Exemplo Context</h1>
+                    <UserInfo />
+                </UserContext.Provider>
+            </div>
         </div>
     )
 }
